@@ -1,5 +1,7 @@
 const Logo = () => {
-  return <div>NextLevel Blog 🚀</div>;
+  return (
+    <div className="uppercase font-bold text-gray-600">NextLevel Blog 🚀</div>
+  );
 };
 
 export default Logo;
