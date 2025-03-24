@@ -1,6 +1,8 @@
 const Logo = () => {
   return (
-    <div className="uppercase font-bold text-gray-600">NextLevel Blog 🚀</div>
+    <div className="uppercase font-bold text-gray-700 text-xl">
+      NextLevel Blog 🚀
+    </div>
   );
 };
 
