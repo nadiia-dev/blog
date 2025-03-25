@@ -4,7 +4,7 @@
   excerpt:
     Why Tailwind CSS became my go-to choice and how it speeds up development.
   date: "2025-03-15"
-  slug: "tailwind-favorite"
+  slug: "tailwind-css-post-content"
   isFeatured: true
 ---
 

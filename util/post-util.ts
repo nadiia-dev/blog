@@ -1,24 +1,20 @@
+import { Post } from "@/types/Post";
 import fs from "fs";
 import matter from "gray-matter";
 import path from "path";
 
-interface Post {
-  slug: string;
-  title: string;
-  date: string;
-  image: string;
-  excerpt: string;
-  content: string;
-  isFeatured?: boolean;
-}
-
 const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getPostsData(fileName: string): Post {
-  const filePath = path.join(postsDirectory, fileName);
+export function getPostsFiles() {
+  return fs.readdirSync(postsDirectory);
+}
+
+export function getPostsData(postId: string): Post {
+  const postSlug = postId.replace(/\.md$/, "");
+
+  const filePath = path.join(postsDirectory, `${postSlug}.md`);
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
-  const postSlug = fileName.replace(/\.md$/, "");
 
   const postData = {
     slug: postSlug,
@@ -30,7 +26,7 @@ export function getPostsData(fileName: string): Post {
 }
 
 export function getAllPosts(): Post[] {
-  const files = fs.readdirSync(postsDirectory);
+  const files = getPostsFiles();
   const allPosts = files.map((file) => {
     return getPostsData(file);
   });
