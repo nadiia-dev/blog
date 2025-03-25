@@ -1,32 +1,88 @@
-import { useState } from "react";
+import Notification from "@/ui/Notification";
+import { useEffect, useState } from "react";
+
+const sendData = async (enteredData: {
+  name: string;
+  email: string;
+  message: string;
+}) => {
+  const response = await fetch("/api/contact", {
+    method: "POST",
+    body: JSON.stringify(enteredData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong!");
+  }
+};
 
 const ContactForm = () => {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredName, setEnteredName] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
+  const [reqStatus, setReqStatus] = useState<string | null>("");
+  const [requestError, setRequestError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (reqStatus === "success" || reqStatus === "error") {
+      const timeout = setTimeout(() => {
+        setReqStatus(null);
+        setRequestError(null);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [reqStatus]);
 
   const handleSubmitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify({
-        name: enteredName,
-        email: enteredEmail,
-        message: enteredMessage,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Something went wrong!");
+    const enteredData = {
+      name: enteredName,
+      email: enteredEmail,
+      message: enteredMessage,
+    };
+    setReqStatus("pending");
+    try {
+      await sendData(enteredData);
+      setReqStatus("success");
+      setEnteredEmail("");
+      setEnteredName("");
+      setEnteredMessage("");
+    } catch (e) {
+      setRequestError(e.message);
+      setReqStatus("error");
     }
-    e.currentTarget.reset();
   };
+
+  let notification;
+
+  if (reqStatus === "pending") {
+    notification = {
+      status: "pending",
+      title: "Sending message...",
+      message: "Your message is on its way!",
+    };
+  }
+
+  if (reqStatus === "success") {
+    notification = {
+      status: "success",
+      title: "Success!",
+      message: "Message sent successfully!",
+    };
+  }
+
+  if (reqStatus === "error") {
+    notification = {
+      status: "error",
+      title: "Error!",
+      message: requestError,
+    };
+  }
 
   return (
     <section className="my-6 mx-auto rounded-lg bg-gray-100 w-[90%] max-w-[50rem] p-4 shadow-md text-lg">
@@ -88,6 +144,13 @@ const ContactForm = () => {
           </button>
         </div>
       </form>
+      {notification && (
+        <Notification
+          status={notification.status}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
     </section>
   );
 };

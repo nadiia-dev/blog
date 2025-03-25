@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.15",
+    "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "next": "15.2.3",
     "postcss": "^8.5.3",
