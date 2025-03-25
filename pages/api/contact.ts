@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import postgres from "postgres";
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: "Must be 2 or more characters long" }),
@@ -7,7 +10,10 @@ const contactSchema = z.object({
   message: z.string().min(2, { message: "Must be 2 or more characters long" }),
 });
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     const { name, email, message } = req.body;
     const result = contactSchema.safeParse(req.body);
@@ -15,13 +21,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(422).json({ message: "Invalid input." });
       return;
     }
-
-    const newMessage = {
-      name,
-      email,
-      message,
-    };
-    console.log(newMessage);
-    res.status(201).json({ message: "Successfully sent message" });
+    try {
+      await sql`
+        INSERT INTO contacts (name, email, message)
+        VALUES (${name}, ${email}, ${message})
+      `;
+      res.status(201).json({ message: "Successfully sent message" });
+    } catch (e) {
+      res.status(500).json({ message: "Failed to store message" });
+      return;
+    }
   }
 }

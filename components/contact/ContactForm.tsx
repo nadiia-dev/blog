@@ -5,10 +5,10 @@ const ContactForm = () => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredMessage, setEnteredMessage] = useState("");
 
-  const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetch("/api/contact", {
+    const response = await fetch("/api/contact", {
       method: "POST",
       body: JSON.stringify({
         name: enteredName,
@@ -19,6 +19,13 @@ const ContactForm = () => {
         "Content-Type": "application/json",
       },
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong!");
+    }
+    e.currentTarget.reset();
   };
 
   return (
