@@ -53,7 +53,11 @@ const ContactForm = () => {
       setEnteredName("");
       setEnteredMessage("");
     } catch (e) {
-      setRequestError(e.message);
+      if (e instanceof Error) {
+        setRequestError(e.message);
+      } else {
+        setRequestError("Something went wrong");
+      }
       setReqStatus("error");
     }
   };

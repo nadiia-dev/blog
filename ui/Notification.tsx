@@ -7,7 +7,7 @@ function Notification({
 }: {
   title: string;
   status: string;
-  message?: string;
+  message?: string | null;
 }) {
   return (
     <div
