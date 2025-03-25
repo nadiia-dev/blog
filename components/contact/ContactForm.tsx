@@ -1,10 +1,32 @@
+import { useState } from "react";
+
 const ContactForm = () => {
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredName, setEnteredName] = useState("");
+  const [enteredMessage, setEnteredMessage] = useState("");
+
+  const handleSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    fetch("/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: enteredName,
+        email: enteredEmail,
+        message: enteredMessage,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   return (
     <section className="my-6 mx-auto rounded-lg bg-gray-100 w-[90%] max-w-[50rem] p-4 shadow-md text-lg">
       <h1 className="text-3xl mt-4 mb-0 text-left md:text-4xl md:text-center">
         How can I help you?
       </h1>
-      <form>
+      <form onSubmit={handleSubmitMessage}>
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[10rem]">
             <label htmlFor="email" className="block font-bold my-2">
@@ -14,6 +36,10 @@ const ContactForm = () => {
               className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
               type="email"
               id="email"
+              value={enteredEmail}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEnteredEmail(e.target.value)
+              }
               required
             />
           </div>
@@ -25,6 +51,10 @@ const ContactForm = () => {
               className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
               type="text"
               id="name"
+              value={enteredName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEnteredName(e.target.value)
+              }
               required
             />
           </div>
@@ -37,6 +67,10 @@ const ContactForm = () => {
             className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
             id="message"
             rows={5}
+            value={enteredMessage}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setEnteredMessage(e.target.value)
+            }
             required
           ></textarea>
         </div>
