@@ -1,7 +1,12 @@
 import { idenifyUser } from "@/util/identify";
 import { useState } from "react";
+import { CommentData } from "./Comments";
 
-const CommentForm = ({ postSlug }: { postSlug: string }) => {
+const CommentForm = ({
+  onAddComment,
+}: {
+  onAddComment: (commentData: CommentData) => void;
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     comment: "",
@@ -16,42 +21,25 @@ const CommentForm = ({ postSlug }: { postSlug: string }) => {
     });
   };
 
-  const handleSubmitComment = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
 
     const user_fingerprint = await idenifyUser();
 
-    const enteredData = {
-      post_slug: postSlug,
-      user_fingerprint,
-      name: formData.name,
-      text: formData.comment,
-    };
-
-    try {
-      const response = await fetch("/api/comment", {
-        method: "POST",
-        body: JSON.stringify(enteredData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      await response.json();
-    } catch (e) {
-      if (e instanceof Error) {
-        console.error("Something went wrong:", e);
-      }
+    if (user_fingerprint) {
+      const enteredData = {
+        user_fingerprint,
+        name: formData.name,
+        text: formData.comment,
+      };
+      onAddComment(enteredData);
     }
-
     form.reset();
   };
 
   return (
-    <form
-      onSubmit={handleSubmitComment}
-      className="space-y-4 w-xl my-5 mx-auto"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4 w-2xl my-5 mx-auto">
       <div>
         <label
           htmlFor="name"

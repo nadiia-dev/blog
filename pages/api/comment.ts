@@ -11,13 +11,12 @@ export default async function handler(
     const { post_slug, text, user_fingerprint, name } = req.body;
 
     try {
-      await sql`
+      const data = await sql`
                 INSERT INTO comments (post_slug, user_fingerprint, text, name) VALUES (${post_slug}, ${user_fingerprint}, ${text}, ${name})  
                 ON CONFLICT (id) DO NOTHING;
             `;
-      res.status(201).json({
-        message: "Comment added",
-      });
+
+      res.status(201).json(data);
     } catch (e) {
       if (e instanceof Error)
         res.status(500).json({ message: "Error adding comment" });
