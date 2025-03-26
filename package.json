@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.15",
+    "@thumbmarkjs/thumbmarkjs": "^0.20.0",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "next": "15.2.3",
