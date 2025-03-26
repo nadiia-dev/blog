@@ -2,6 +2,7 @@ import PostDetail from "@/components/posts/post-detail/PostDetail";
 import { Post } from "@/types/Post";
 import { getPostsData, getPostsFiles } from "@/util/post-util";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 
 type PostPageProps = {
   post: Post;
@@ -10,6 +11,10 @@ type PostPageProps = {
 const PostDetailsPage = ({ post }: PostPageProps) => {
   return (
     <>
+      <Head>
+        <title>{post.title}</title>
+        <meta name="description" content={post.excerpt} />
+      </Head>
       <PostDetail post={post} />
     </>
   );
