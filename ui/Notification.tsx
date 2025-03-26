@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createPortal } from "react-dom";
 
 function Notification({
   title,
@@ -9,7 +10,7 @@ function Notification({
   status: string;
   message?: string | null;
 }) {
-  return (
+  return createPortal(
     <div
       className={clsx(
         "fixed bottom-0 left-0 w-full h-20 flex justify-between items-center px-8 shadow-md text-gray-100 bg-gray-800",
@@ -22,7 +23,8 @@ function Notification({
     >
       <h2 className="text-lg m-0">{title}</h2>
       <p className="m-0">{message}</p>
-    </div>
+    </div>,
+    document.getElementById("notifications") as HTMLElement
   );
 }
 
