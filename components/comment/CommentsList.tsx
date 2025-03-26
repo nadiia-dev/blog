@@ -27,7 +27,7 @@ const CommentsList = ({ comments }: Props) => {
             {comments.map((comment) => (
               <li
                 key={comment.created_at}
-                className="border-b border-gray-300 py-4 max-w-2xl mx-auto"
+                className="border-b border-gray-300 py-4 w-2xl mx-auto"
               >
                 <div className="flex justify-between items-start">
                   <div>

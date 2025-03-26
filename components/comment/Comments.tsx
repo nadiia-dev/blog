@@ -18,6 +18,12 @@ const Comments = ({
   initialComments: Comment[];
 }) => {
   const [comments, setComments] = useState(initialComments);
+  const [showComments, setShowComments] = useState(false);
+
+  function toggleCommentsHandler() {
+    setShowComments((prevStatus) => !prevStatus);
+  }
+
   const fetchComments = async () => {
     const res = await fetch(`/api/posts/${post.slug}`);
     const newComments = await res.json();
@@ -44,10 +50,16 @@ const Comments = ({
     }
   };
   return (
-    <>
+    <section className="flex flex-col justify-center items-center">
       <CommentForm onAddComment={handleSubmitComment} />
-      <CommentsList comments={comments} />
-    </>
+      <button
+        onClick={toggleCommentsHandler}
+        className="cursor-pointer my-5 text-purple-950"
+      >
+        {showComments ? "Hide" : "Show"} Comments
+      </button>
+      {showComments && <CommentsList comments={comments} />}
+    </section>
   );
 };
 
