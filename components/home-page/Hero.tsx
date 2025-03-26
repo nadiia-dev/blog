@@ -5,7 +5,7 @@ const Hero = () => {
     <section className="flex flex-col justify-center items-center text-center bg-gradient-to-b from-gray-900 to-gray-800 py-8">
       <div className="w-72 h-72 shadow-md rounded-full overflow-hidden bg-gray-700 mx-auto">
         <Image
-          src="/images/site.png"
+          src="/images/site/hero.jpg"
           alt="An image showing Max"
           width={300}
           height={300}

@@ -1,5 +1,5 @@
-import FeaturedPosts from "@/components/hame-page/FeaturedPosts";
-import Hero from "@/components/hame-page/Hero";
+import FeaturedPosts from "@/components/home-page/FeaturedPosts";
+import Hero from "@/components/home-page/Hero";
 import { Post } from "@/types/Post";
 import { getFeaturedPosts } from "@/util/post-util";
 import { GetStaticProps } from "next";

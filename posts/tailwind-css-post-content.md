@@ -1,6 +1,6 @@
 ---
   title: "Tailwind CSS: My Favorite Styling Framework"
-  image: post-image.jpg
+  image: post-image.png
   excerpt:
     Why Tailwind CSS became my go-to choice and how it speeds up development.
   date: "2025-03-15"
