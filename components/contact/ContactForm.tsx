@@ -1,32 +1,19 @@
 import Notification from "@/ui/Notification";
 import { useEffect, useState } from "react";
 
-const sendData = async (enteredData: {
-  name: string;
-  email: string;
-  message: string;
-}) => {
-  const response = await fetch("/api/contact", {
-    method: "POST",
-    body: JSON.stringify(enteredData),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Something went wrong!");
-  }
-};
-
 const ContactForm = () => {
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredMessage, setEnteredMessage] = useState("");
-  const [reqStatus, setReqStatus] = useState<string | null>("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [reqStatus, setReqStatus] = useState<
+    "pending" | "success" | "error" | null
+  >(null);
   const [requestError, setRequestError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     if (reqStatus === "success" || reqStatus === "error") {
@@ -38,27 +25,65 @@ const ContactForm = () => {
     }
   }, [reqStatus]);
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => {
+      return { ...prevData, [name]: value };
+    });
+  };
+
   const handleSubmitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
     const enteredData = {
-      name: enteredName,
-      email: enteredEmail,
-      message: enteredMessage,
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
     };
     setReqStatus("pending");
+    setValidationError({});
     try {
-      await sendData(enteredData);
-      setReqStatus("success");
-      setEnteredEmail("");
-      setEnteredName("");
-      setEnteredMessage("");
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        body: JSON.stringify(enteredData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (data.errors) {
+          const formattedErrors = Object.entries(data.errors).reduce(
+            (acc, [field, error]: [string, any]) => {
+              acc[field] = error._errors?.[0] || "Invalid field";
+              return acc;
+            },
+            {} as Record<string, string>
+          );
+          setValidationError(formattedErrors);
+        } else {
+          setValidationError({ general: data.message });
+        }
+        setReqStatus("error");
+      } else {
+        setReqStatus("success");
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+        form.reset();
+      }
     } catch (e) {
       if (e instanceof Error) {
-        setRequestError(e.message);
-      } else {
-        setRequestError("Something went wrong");
+        console.error("Something went wrong:", e);
+        setReqStatus("error");
+        setValidationError({
+          general: "Something went wrong. Please try again.",
+        });
       }
-      setReqStatus("error");
     }
   };
 
@@ -102,13 +127,15 @@ const ContactForm = () => {
             <input
               className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
               type="email"
+              name="email"
               id="email"
-              value={enteredEmail}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEnteredEmail(e.target.value)
-              }
+              defaultValue={formData.email}
+              onChange={handleChange}
               required
             />
+            {validationError.email && (
+              <p className="text-red-500 text-sm">{validationError.email}</p>
+            )}
           </div>
           <div className="flex-1 min-w-[10rem]">
             <label htmlFor="name" className="block font-bold my-2">
@@ -117,13 +144,15 @@ const ContactForm = () => {
             <input
               className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
               type="text"
+              name="name"
               id="name"
-              value={enteredName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEnteredName(e.target.value)
-              }
+              defaultValue={formData.name}
+              onChange={handleChange}
               required
             />
+            {validationError.name && (
+              <p className="text-red-500 text-sm">{validationError.name}</p>
+            )}
           </div>
         </div>
         <div className="flex-1 min-w-[10rem]">
@@ -133,17 +162,22 @@ const ContactForm = () => {
           <textarea
             className="w-full p-1 rounded-md border border-gray-400 bg-gray-50 resize-none"
             id="message"
+            name="message"
             rows={5}
-            value={enteredMessage}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setEnteredMessage(e.target.value)
-            }
+            defaultValue={formData.message}
+            onChange={handleChange}
             required
           ></textarea>
+          {validationError.message && (
+            <p className="text-red-500 text-sm">{validationError.message}</p>
+          )}
         </div>
 
         <div className="mt-4 text-right">
-          <button className="font-inherit cursor-pointer bg-primary-700 border border-primary-700 py-2 px-4 rounded-md text-primary-50 shadow-md hover:bg-primary-500 hover:border-primary-500">
+          <button
+            disabled={reqStatus === "error" || reqStatus === "pending"}
+            className="font-inherit cursor-pointer bg-primary-700 border border-primary-700 py-2 px-4 rounded-md text-primary-50 shadow-md hover:bg-primary-500 hover:border-primary-500"
+          >
             Send Message
           </button>
         </div>

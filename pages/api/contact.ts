@@ -18,8 +18,11 @@ export default async function handler(
     const { name, email, message } = req.body;
     const result = contactSchema.safeParse(req.body);
     if (!result.success) {
-      res.status(422).json({ message: "Invalid input." });
-      return;
+      const errors = result.error.format();
+      return res.status(422).json({
+        message: "Invalid input",
+        errors,
+      });
     }
     try {
       await sql`
@@ -28,7 +31,8 @@ export default async function handler(
       `;
       res.status(201).json({ message: "Successfully sent message" });
     } catch (e) {
-      res.status(500).json({ message: "Failed to store message" });
+      if (e instanceof Error)
+        res.status(500).json({ message: "Failed to store message" });
       return;
     }
   }
