@@ -17,13 +17,13 @@ const PostItem = ({ post }: { post: Post }) => {
   return (
     <li className="shadow-md bg-gray-800 text-center">
       <Link href={linkPath} className="text-gray-100">
-        <div className="w-full max-h-[20rem] overflow-hidden">
+        <div className="w-full h-[10rem] md:h-[15rem] overflow-hidden relative">
           <Image
             src={imagePath}
             alt={title}
-            width={300}
-            height={200}
-            layout="responsive"
+            sizes="(max-width: 600px) 100vw, 800px"
+            fill
+            priority
           />
         </div>
         <div className="p-4">

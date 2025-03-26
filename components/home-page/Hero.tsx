@@ -9,7 +9,8 @@ const Hero = () => {
           alt="An image showing Max"
           width={300}
           height={300}
-          className="object-cover object-top w-full h-full"
+          className="object-cover object-top"
+          priority
         />
       </div>
       <p className="text-lg text-gray-200 w-[90%] max-w-2xl mx-auto">
