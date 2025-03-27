@@ -1,6 +1,16 @@
 import Notification from "@/ui/Notification";
 import { useEffect, useState } from "react";
 
+interface ErrorDetail {
+  _errors: string[];
+}
+
+interface ValidationErrors {
+  name?: ErrorDetail;
+  email?: ErrorDetail;
+  message?: ErrorDetail;
+}
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -55,13 +65,12 @@ const ContactForm = () => {
       const data = await response.json();
       if (!response.ok) {
         if (data.errors) {
-          const formattedErrors = Object.entries(data.errors).reduce(
-            (acc, [field, error]: [string, any]) => {
-              acc[field] = error._errors?.[0] || "Invalid field";
-              return acc;
-            },
-            {} as Record<string, string>
-          );
+          const formattedErrors = Object.entries(
+            data.errors as ValidationErrors
+          ).reduce((acc, [field, error]) => {
+            acc[field] = error._errors?.[0] || "Invalid field";
+            return acc;
+          }, {} as Record<string, string>);
           setValidationError(formattedErrors);
         } else {
           setValidationError({ general: data.message });
