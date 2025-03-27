@@ -35,6 +35,39 @@ Vercel will provide the necessary environment variables like **SUPABASE_URL** an
 
 Once the setup is complete, your database will be ready for use.
 
+Database Structure
+Your application uses PostgreSQL, managed through Supabase, with the following basic structure:
+
+### Tables:
+
+#### posts
+
+- `id` (UUID): Unique identifier for each post.
+- `title` (TEXT): Title of the post.
+- `slug` (TEXT): Post unique identifier that is used in the URL.
+
+#### comments
+
+- `id` (UUID): Unique identifier for each comment.
+- `post_slug` (TEXT): Foreign key referring to the `posts` table.
+- `user_fingerprint` (TEXT): Unique identifier of the user who created the comment.
+- `name` (TEXT): Name of the person who commented.
+- `text` (TEXT): Content of the comment.
+- `created_at` (TIMESTAMP): Date and time when the comment was posted.
+
+#### likes
+
+- `id` (UUID): Unique identifier for each like.
+- `post_slug` (TEXT): Foreign key referring to the `posts` table.
+- `user_fingerprint` (TEXT): Unique identifier of the user who liked the post.
+
+#### contacts
+
+- `id` (UUID): Unique identifier for each submission.
+- `name` (TEXT): Name of the person submitting the form.
+- `email` (TEXT): Email address of the person submitting the form.
+- `message` (TEXT): Message sent through the contact form.
+
 ## Getting Started
 
 To get started with the project locally, follow these steps:
