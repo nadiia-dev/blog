@@ -39,7 +39,10 @@ const CommentForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-2xl my-5 mx-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 w-[98%] md:w-2xl my-5 mx-auto"
+    >
       <div>
         <label
           htmlFor="name"

@@ -20,12 +20,12 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
       const res = await fetch("/api/like", {
         method: "POST",
         headers: {
+          user_fingerprint: userFingerprint || "",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           post_slug: null,
           comment_id: commentId,
-          user_fingerprint: userFingerprint,
         }),
       });
 
@@ -41,7 +41,7 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
     }
   };
   return (
-    <li className="border-b border-gray-300 py-4 w-2xl mx-auto">
+    <li className="border-b border-gray-300 py-4 mx-auto">
       <div className="flex justify-between items-start">
         <div>
           <p className="font-semibold text-lg">{comment.name}</p>

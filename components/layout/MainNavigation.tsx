@@ -8,7 +8,7 @@ const MainNavigation = () => {
         <Logo />
       </Link>
       <nav>
-        <ul className="flex items-center gap-8">
+        <ul className="flex items-center md:gap-8">
           <li>
             <Link
               href="/posts"
