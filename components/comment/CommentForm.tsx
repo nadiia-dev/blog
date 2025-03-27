@@ -1,4 +1,3 @@
-import { idenifyUser } from "@/util/identify";
 import { useState } from "react";
 import { CommentData } from "./Comments";
 
@@ -25,16 +24,11 @@ const CommentForm = ({
     e.preventDefault();
     const form = e.target as HTMLFormElement;
 
-    const user_fingerprint = await idenifyUser();
-
-    if (user_fingerprint) {
-      const enteredData = {
-        user_fingerprint,
-        name: formData.name,
-        text: formData.comment,
-      };
-      onAddComment(enteredData);
-    }
+    const enteredData = {
+      name: formData.name,
+      text: formData.comment,
+    };
+    onAddComment(enteredData);
     form.reset();
   };
 

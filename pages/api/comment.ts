@@ -8,7 +8,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { post_slug, text, user_fingerprint, name } = req.body;
+    const { post_slug, text, name } = req.body;
+    const user_fingerprint = req.headers["user_fingerprint"];
+
+    if (!user_fingerprint) {
+      return res.status(500).json({ message: "Error adding comment" });
+    }
 
     try {
       const data = await sql`

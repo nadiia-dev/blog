@@ -53,7 +53,6 @@ const PostActions = ({ slug }: { slug: string }) => {
         },
         body: JSON.stringify({
           post_slug: slug,
-          comment_id: null,
         }),
       });
 

@@ -4,9 +4,9 @@ import CommentsList from "./CommentsList";
 import { Post } from "@/types/Post";
 import { Comment } from "@/types/Comment";
 import { useCommentsStore } from "@/store/commentsStore";
+import { idenifyUser } from "@/util/identify";
 
 export interface CommentData {
-  user_fingerprint: string;
   name: string;
   text: string;
 }
@@ -24,7 +24,6 @@ const Comments = ({
     postComments,
     setPostCommentsCount,
     setPostComments,
-    appendPostComments,
   } = useCommentsStore();
 
   useEffect(() => {
@@ -38,15 +37,17 @@ const Comments = ({
   const fetchComments = async () => {
     const res = await fetch(`/api/posts/${post.slug}`);
     const newComments = await res.json();
-    appendPostComments((prevComments) => [...prevComments, newComments]);
+    setPostComments(newComments);
   };
 
   const handleSubmitComment = async (enteredData: CommentData) => {
+    const userFingerprint = await idenifyUser();
     try {
       const response = await fetch("/api/comment", {
         method: "POST",
         body: JSON.stringify({ post_slug: post.slug, ...enteredData }),
         headers: {
+          user_fingerprint: userFingerprint || "",
           "Content-Type": "application/json",
         },
       });
