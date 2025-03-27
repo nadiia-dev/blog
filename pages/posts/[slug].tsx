@@ -2,8 +2,8 @@ import Comments from "@/components/comment/Comments";
 import PostDetail from "@/components/posts/post-detail/PostDetail";
 import { Comment } from "@/types/Comment";
 import { Post } from "@/types/Post";
-import { getPostsData, getPostsFiles } from "@/util/post-util";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { getPostsData } from "@/util/post-util";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 type PostPageProps = {
@@ -24,7 +24,7 @@ const PostDetailsPage = ({ post, initialComments }: PostPageProps) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<PostPageProps> = async ({
+export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({
   params,
 }) => {
   if (!params || typeof params.slug !== "string") {
@@ -34,21 +34,16 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async ({
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${params.slug}`
   );
-  const initialComments: Comment[] = await res.json();
 
+  if (!res.ok) {
+    console.error(`Failed to fetch post: ${res.status} ${res.statusText}`);
+    return { notFound: true };
+  }
+
+  const initialComments: Comment[] = await res.json();
   const post = getPostsData(params.slug);
 
-  return { props: { post, initialComments }, revalidate: 100 };
-};
-
-export const getStaticPaths: GetStaticPaths = () => {
-  const postsFiles = getPostsFiles();
-  const slugs = postsFiles.map((file) => file.replace(/\.md$/, ""));
-
-  return {
-    paths: slugs.map((slug) => ({ params: { slug } })),
-    fallback: false,
-  };
+  return { props: { post, initialComments } };
 };
 
 export default PostDetailsPage;
