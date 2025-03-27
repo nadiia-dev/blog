@@ -1,40 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Blog App
+
+This is a **blog app** built using **Next.js** for dynamic routing and rendering. It provides a platform to display blog posts with features such as comments and dynamic data fetching. The app uses modern web technologies to create an optimized, responsive, and fast experience.
+
+## Features
+
+- **Dynamic Routing**: Utilizes **Next.js page routing** to handle blog posts dynamically.
+- **Contact Form**: Users can write a message to blog author.
+- **Comments System**: Users can comment on each post, and the comments are dynamically fetched and rendered.
+- **Markdown Rendering**: Blog posts are written in Markdown, and the content is rendered using **React Markdown**.
+- **Likes on Posts**: Users can like a post, and the number of likes is dynamically updated. The like count is stored in the database and displayed on the post page.
+- **Error Handling**: Proper error handling for failed API calls.
+
+## Technologies Used
+
+- **Next.js** (React framework for server-side rendering and static site generation)
+- **React** (JavaScript library for building user interfaces)
+- **TypeScript** (Superset of JavaScript that adds types)
+- **Zustand** (State management solution)
+- **React Markdown** (To render Markdown content)
+- **Vercel** (For deploying the app)
+- **Tailwind CSS** (Utility-first CSS framework)
+- **PostgreSQL** (Relational database used to store blog posts, comments, and likes)
+- **Supabase** (Backend-as-a-Service platform for managing the database)
+
+## Database and Storage Setup
+
+To set up the database and storage, follow these steps:
+
+1. **Go to Vercel**: Log in to your **Vercel** account.
+2. **Create a New Storage**: In the Vercel dashboard, create a new storage instance.
+3. **Select Supabase PostgreSQL**: Choose **Supabase** with **PostgreSQL** for the storage solution. This will automatically set up your database and connection.
+
+Vercel will provide the necessary environment variables like **SUPABASE_URL** and **SUPABASE_ANON_KEY** to connect to the database.
+
+Once the setup is complete, your database will be ready for use.
 
 ## Getting Started
 
-First, run the development server:
+To get started with the project locally, follow these steps:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/nadiia-dev/blog.git
+cd blog
+```
+
+Install the dependencies:
+
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+3. Create a .env file in the root directory and add any necessary environment variables:
+
+```env
+POSTGRES_URL= your postgres database url
+NEXT_PUBLIC_API_URL= your api url here
+```
+
+4. Run the app in development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Visit http://localhost:3000 in your browser to see the app in action.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+This app is deployed on Vercel.
