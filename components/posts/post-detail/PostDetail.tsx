@@ -57,6 +57,7 @@ const PostDetail = ({ post }: { post: Post }) => {
   };
   return (
     <article className="w-[95%] max-w-[60rem] my-8 mx-auto text-base leading-8 bg-gray-100 rounded-lg p-4 sm:p-8">
+      <p>{post.title}</p>
       <PostHeader postSlug={post.slug} title={post.title} image={imagePath} />
       <ReactMarkdown components={customRenderers}>{post.content}</ReactMarkdown>
     </article>

@@ -8,8 +8,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { post_slug, comment_id, user_fingerprint } = req.body;
+    const { post_slug, comment_id } = req.body;
+    const user_fingerprint = req.headers["user_fingerprint"];
 
+    if (!user_fingerprint) {
+      return res.status(500).json({ message: "Error processing like" });
+    }
     try {
       const likes = await sql`
     SELECT * FROM likes WHERE user_fingerprint = ${user_fingerprint} AND (post_slug = ${post_slug} OR post_slug IS NULL) AND (comment_id = ${comment_id} OR comment_id IS NULL);
@@ -31,7 +35,5 @@ export default async function handler(
         res.status(500).json({ message: "Error processing like" });
       }
     }
-  } else {
-    res.status(405).json({ message: "Method Not Allowed" });
   }
 }
