@@ -13,14 +13,16 @@ export default async function handler(
       return res.status(400).json({ message: "Slug is required" });
     }
     try {
-      const data = await sql`
+      const totalComments = await sql`
         SELECT COUNT(*) AS comments FROM comments WHERE post_slug = ${slug};
       `;
 
-      return res.status(200).json(data);
+      return res
+        .status(200)
+        .json({ totalComments: totalComments[0]?.comments || 0 });
     } catch (e) {
       if (e instanceof Error)
-        res.status(500).json({ message: "Error loading post" });
+        res.status(500).json({ message: "Error loading post comments" });
       return;
     }
   }

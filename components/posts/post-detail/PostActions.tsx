@@ -1,3 +1,4 @@
+import { useCommentsStore } from "@/store/commentsStore";
 import { useLikesStore } from "@/store/likesStore";
 import { idenifyUser } from "@/util/identify";
 import clsx from "clsx";
@@ -6,12 +7,26 @@ import { BiSolidLike } from "react-icons/bi";
 import { FaComment } from "react-icons/fa";
 
 const PostActions = ({ slug }: { slug: string }) => {
-  console.log("Component rendered");
   const { postLikesCount, userLiked, setPostLikesCount, setUserLiked } =
     useLikesStore();
+  const { postCommentsCount, setPostCommentsCount } = useCommentsStore();
 
   useEffect(() => {
-    console.log("Effect triggered");
+    const fetchComments = async () => {
+      const userFingerprint = await idenifyUser();
+      const res = await fetch(`/api/posts/${slug}/comments`, {
+        headers: {
+          user_fingerprint: userFingerprint || "",
+        },
+      });
+      const data = await res.json();
+      setPostCommentsCount(data.totalComments);
+    };
+
+    fetchComments();
+  }, [slug, setPostCommentsCount]);
+
+  useEffect(() => {
     const fetchLikes = async () => {
       const userFingerprint = await idenifyUser();
       const res = await fetch(`/api/posts/${slug}/likes`, {
@@ -72,7 +87,7 @@ const PostActions = ({ slug }: { slug: string }) => {
       </li>
       <li className="flex gap-2.5 items-center">
         <FaComment size={30} className="text-gray-950" />
-        <p>commented</p>
+        <p>{postCommentsCount}</p>
       </li>
     </ul>
   );

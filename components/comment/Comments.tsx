@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommentForm from "./CommentForm";
 import CommentsList from "./CommentsList";
 import { Post } from "@/types/Post";
 import { Comment } from "@/types/Comment";
+import { useCommentsStore } from "@/store/commentsStore";
 
 export interface CommentData {
   user_fingerprint: string;
@@ -17,8 +18,18 @@ const Comments = ({
   post: Post;
   initialComments: Comment[];
 }) => {
-  const [comments, setComments] = useState(initialComments);
   const [showComments, setShowComments] = useState(false);
+  const {
+    postCommentsCount,
+    postComments,
+    setPostCommentsCount,
+    setPostComments,
+    appendPostComments,
+  } = useCommentsStore();
+
+  useEffect(() => {
+    setPostComments(initialComments);
+  }, [initialComments, setPostComments]);
 
   function toggleCommentsHandler() {
     setShowComments((prevStatus) => !prevStatus);
@@ -27,7 +38,7 @@ const Comments = ({
   const fetchComments = async () => {
     const res = await fetch(`/api/posts/${post.slug}`);
     const newComments = await res.json();
-    setComments(newComments);
+    appendPostComments((prevComments) => [...prevComments, newComments]);
   };
 
   const handleSubmitComment = async (enteredData: CommentData) => {
@@ -41,6 +52,7 @@ const Comments = ({
       });
       await response.json();
       if (response.ok) {
+        setPostCommentsCount(Number(postCommentsCount) + 1);
         fetchComments();
       }
     } catch (e) {
@@ -58,7 +70,7 @@ const Comments = ({
       >
         {showComments ? "Hide" : "Show"} Comments
       </button>
-      {showComments && <CommentsList comments={comments} />}
+      {showComments && <CommentsList comments={postComments} />}
     </section>
   );
 };
